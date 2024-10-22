@@ -1,10 +1,12 @@
 package app
 
+type Board = [9][9]uint8
+
 type Checker struct {
-	board [9][9]uint8
+	board Board
 }
 
-func NewChecker(board [9][9]uint8) *Checker {
+func NewChecker(board Board) *Checker {
 	return &Checker{
 		board: board,
 	}
