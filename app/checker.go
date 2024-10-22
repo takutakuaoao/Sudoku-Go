@@ -1,9 +1,11 @@
 package app
 
-type Board = [9][9]uint8
-
 type Checker struct {
 	board Board
+}
+
+func NewCheckerFromArray(board [9][9]uint8) *Checker {
+	return NewChecker(*NewBoard(board))
 }
 
 func NewChecker(board Board) *Checker {
@@ -34,25 +36,13 @@ func (c *Checker) IsComplete() bool {
 
 func (c *Checker) IsValidHorizontalLine(line uint8) bool {
 	return hasOneToNine(func(expectedNumber uint8) bool {
-		for _, actualANumber := range c.board[line] {
-			if actualANumber == expectedNumber {
-				return true
-			}
-		}
-
-		return false
+		return c.board.HasInRow(line, expectedNumber)
 	})
 }
 
 func (c *Checker) IsValidVerticalLine(line uint8) bool {
 	return hasOneToNine(func(expectedNumber uint8) bool {
-		for _, currentActualRow := range c.board {
-			if currentActualRow[line] == expectedNumber {
-				return true
-			}
-		}
-
-		return false
+		return c.board.HasInColumn(line, expectedNumber)
 	})
 }
 
@@ -64,7 +54,7 @@ func (c *Checker) IsValidNumberBlock(position uint8) bool {
 
 	return hasOneToNine(func(expectedNumber uint8) bool {
 		for _, currentPosition := range targetPositions {
-			if c.board[currentPosition[ROW_INDEX]][currentPosition[COLUMN_INDEX]] == expectedNumber {
+			if c.board.Has(currentPosition[ROW_INDEX], currentPosition[COLUMN_INDEX], expectedNumber) {
 				return true
 			}
 		}
