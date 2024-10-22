@@ -63,3 +63,128 @@ func TestVerticalANumberLine(t *testing.T) {
 
 	}
 }
+
+func TestCheckNumberBlock(t *testing.T) {
+	cases := []struct {
+		name        string
+		board       Board
+		targetBlock uint8
+	}{
+		{
+			name: "top left block",
+			board: Board{
+				{1, 2, 3},
+				{4, 5, 6},
+				{7, 8, 9},
+			},
+			targetBlock: 0,
+		},
+		{
+			name: "top middle block",
+			board: Board{
+				{0, 0, 0, 1, 2, 3},
+				{0, 0, 0, 4, 5, 6},
+				{0, 0, 0, 7, 8, 9},
+			},
+			targetBlock: 1,
+		},
+		{
+			name: "top right block",
+			board: Board{
+				{0, 0, 0, 0, 0, 0, 1, 2, 3},
+				{0, 0, 0, 0, 0, 0, 4, 5, 6},
+				{0, 0, 0, 0, 0, 0, 7, 8, 9},
+			},
+			targetBlock: 2,
+		},
+		{
+			name: "middle left block",
+			board: Board{
+				{},
+				{},
+				{},
+				{1, 2, 3},
+				{4, 5, 6},
+				{7, 8, 9},
+			},
+			targetBlock: 3,
+		},
+		{
+			name: "middle middle block",
+			board: Board{
+				{},
+				{},
+				{},
+				{0, 0, 0, 1, 2, 3},
+				{0, 0, 0, 4, 5, 6},
+				{0, 0, 0, 7, 8, 9},
+			},
+			targetBlock: 4,
+		},
+		{
+			name: "middle right block",
+			board: Board{
+				{},
+				{},
+				{},
+				{0, 0, 0, 0, 0, 0, 1, 2, 3},
+				{0, 0, 0, 0, 0, 0, 4, 5, 6},
+				{0, 0, 0, 0, 0, 0, 7, 8, 9},
+			},
+			targetBlock: 5,
+		},
+		{
+			name: "bottom left block",
+			board: Board{
+				{},
+				{},
+				{},
+				{},
+				{},
+				{},
+				{1, 2, 3},
+				{4, 5, 6},
+				{7, 8, 9},
+			},
+			targetBlock: 6,
+		},
+		{
+			name: "bottom middle block",
+			board: Board{
+				{},
+				{},
+				{},
+				{},
+				{},
+				{},
+				{0, 0, 0, 1, 2, 3},
+				{0, 0, 0, 4, 5, 6},
+				{0, 0, 0, 7, 8, 9},
+			},
+			targetBlock: 7,
+		},
+		{
+			name: "bottom right block",
+			board: Board{
+				{},
+				{},
+				{},
+				{},
+				{},
+				{},
+				{0, 0, 0, 0, 0, 0, 1, 2, 3},
+				{0, 0, 0, 0, 0, 0, 4, 5, 6},
+				{0, 0, 0, 0, 0, 0, 7, 8, 9},
+			},
+			targetBlock: 8,
+		},
+	}
+
+	for _, tt := range cases {
+		t.Run(tt.name, func(t *testing.T) {
+			stu := NewChecker(tt.board)
+
+			assert.Equal(t, true, stu.IsValidNumberBlock(tt.targetBlock))
+		})
+	}
+}
