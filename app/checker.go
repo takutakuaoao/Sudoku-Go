@@ -12,6 +12,26 @@ func NewChecker(board Board) *Checker {
 	}
 }
 
+func (c *Checker) IsComplete() bool {
+	targets := []uint8{0, 1, 2, 3, 4, 5, 6, 7, 8}
+
+	for _, target := range targets {
+		if !c.IsValidHorizontalLine(target) {
+			return false
+		}
+
+		if !c.IsValidHorizontalLine(target) {
+			return false
+		}
+
+		if !c.IsValidNumberBlock(target) {
+			return false
+		}
+	}
+
+	return true
+}
+
 func (c *Checker) IsValidHorizontalLine(line uint8) bool {
 	return hasOneToNine(func(expectedNumber uint8) bool {
 		for _, actualANumber := range c.board[line] {
