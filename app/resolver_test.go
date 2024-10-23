@@ -59,9 +59,9 @@ func TestResolveLastNumberSpace(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			sut := NewResolver(*NewBoard(tt.board))
 
-			sut.resolve()
+			sut.Resolve()
 
-			assert.Equal(t, true, sut.IsComplete)
+			assert.Equal(t, true, sut.IsComplete())
 		})
 	}
 }
