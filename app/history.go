@@ -30,8 +30,14 @@ func (h History) NG() History {
 	return h.nextNumber()
 }
 
-func (h History) GetInput() ([2]uint8, uint8) {
-	return h.getCurrent().toPrimitive()
+func (h History) GetInput() ([2]uint8, uint8, bool) {
+	if h.currentIndex+1 > uint8(len(h.positions)) {
+		return [2]uint8{}, 0, true
+	}
+
+	position, lastNumber := h.getCurrent().toPrimitive()
+
+	return position, lastNumber, false
 }
 
 func (h History) nextNumber() History {
