@@ -1,5 +1,9 @@
 package app
 
+import "errors"
+
+const MAX_NUMBER_BLOCK_TARGET = 8
+
 type Checker struct {
 	board Board
 }
@@ -26,7 +30,7 @@ func (c *Checker) IsComplete() bool {
 			return false
 		}
 
-		if !c.IsValidNumberBlock(target) {
+		if result, _ := c.IsValidNumberBlock(target); !result {
 			return false
 		}
 	}
@@ -46,7 +50,11 @@ func (c *Checker) IsValidVerticalLine(line uint8) bool {
 	})
 }
 
-func (c *Checker) IsValidNumberBlock(position uint8) bool {
+func (c *Checker) IsValidNumberBlock(position uint8) (bool, error) {
+	if position > MAX_NUMBER_BLOCK_TARGET {
+		return false, errors.New(ERROR_OUT_BLOCK_NUMBER_RANGE)
+	}
+
 	targetPositions := getNumberBlockPositions(position)
 
 	const ROW_INDEX = 0
@@ -60,7 +68,7 @@ func (c *Checker) IsValidNumberBlock(position uint8) bool {
 		}
 
 		return false
-	})
+	}), nil
 }
 
 func getNumberBlockPositions(target uint8) [9][2]uint8 {
@@ -93,3 +101,5 @@ func hasOneToNine(has func(uint8) bool) bool {
 
 	return true
 }
+
+const ERROR_OUT_BLOCK_NUMBER_RANGE = "the number block must be between one to nine"

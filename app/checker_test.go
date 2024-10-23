@@ -215,8 +215,17 @@ func TestCheckNumberBlock(t *testing.T) {
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
 			stu := NewCheckerFromArray(tt.board)
+			result, _ := stu.IsValidNumberBlock(tt.targetBlock)
 
-			assert.Equal(t, true, stu.IsValidNumberBlock(tt.targetBlock))
+			assert.Equal(t, true, result)
 		})
 	}
+}
+
+func TestErrorPassedOutOfNumberBlock(t *testing.T) {
+	stu := NewCheckerFromArray([9][9]uint8{})
+
+	_, err := stu.IsValidNumberBlock(9)
+
+	assert.EqualError(t, err, ERROR_OUT_BLOCK_NUMBER_RANGE)
 }
