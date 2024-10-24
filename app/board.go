@@ -22,8 +22,8 @@ func (b *Board) SearchNotYetEntered() [][2]uint8 {
 	result := [][2]uint8{}
 
 	for rowIndex, row := range b.rows {
-		for columnIndex, column := range row {
-			if column == NOT_YET_INPUT {
+		for columnIndex := range row {
+			if b.IsUnEntered([2]uint8{uint8(rowIndex), uint8(columnIndex)}) {
 				result = append(result, [2]uint8{uint8(rowIndex), uint8(columnIndex)})
 			}
 		}
@@ -54,4 +54,24 @@ func (b *Board) HasInColumn(column uint8, value uint8) bool {
 
 func (b *Board) Has(row uint8, column uint8, value uint8) bool {
 	return b.rows[row][column] == value
+}
+
+func (b *Board) DuplicateNumberInRow(rowNumber uint8, number uint8) bool {
+	count := 0
+
+	for _, value := range b.rows[rowNumber] {
+		if value == number {
+			count++
+		}
+	}
+
+	return count >= 2
+}
+
+func (b *Board) GetPositionNumber(position [2]uint8) uint8 {
+	return b.rows[position[0]][position[1]]
+}
+
+func (b *Board) IsUnEntered(position [2]uint8) bool {
+	return b.GetPositionNumber(position) == NOT_YET_INPUT
 }

@@ -1,6 +1,8 @@
 package app
 
-import "errors"
+import (
+	"errors"
+)
 
 const MAX_NUMBER_BLOCK_TARGET = 8
 
@@ -69,6 +71,14 @@ func (c *Checker) IsValidNumberBlock(position uint8) (bool, error) {
 
 		return false
 	}), nil
+}
+
+func (c *Checker) OkHorizontalSpecifiedPosition(position [2]uint8) bool {
+	if c.board.IsUnEntered(position) {
+		return true
+	}
+
+	return !c.board.DuplicateNumberInRow(position[0], c.board.GetPositionNumber(position))
 }
 
 func getNumberBlockPositions(target uint8) [9][2]uint8 {

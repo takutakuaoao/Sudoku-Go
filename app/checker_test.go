@@ -229,3 +229,45 @@ func TestErrorPassedOutOfNumberBlock(t *testing.T) {
 
 	assert.EqualError(t, err, ERROR_OUT_BLOCK_NUMBER_RANGE)
 }
+
+func Test_to_check_for_rule_violations_on_the_horizontal_line_of_given_square(t *testing.T) {
+	cases := []struct {
+		name     string
+		boardRow [9]uint8
+		expected bool
+	}{
+		{
+			name:     "Duplicate numbers on a horizontal line are not acceptable.",
+			boardRow: [9]uint8{1, 1, 2, 3, 4, 5, 6, 7, 8},
+			expected: false,
+		},
+		{
+			name:     "OK if there are no duplicate numbers on the horizontal line.",
+			boardRow: [9]uint8{1, 2, 3, 4, 5, 6, 7, 8, 9},
+			expected: true,
+		},
+		{
+			name:     "OK if there are no duplicate numbers on the horizontal line with some spaces.",
+			boardRow: [9]uint8{1, 2, 3, 4, 0, 0, 0, 0, 0},
+			expected: true,
+		},
+		{
+			name:     "OK if the specified square is not filled in.",
+			boardRow: [9]uint8{0, 1, 2, 3, 0, 0, 0, 0, 0},
+			expected: true,
+		},
+	}
+
+	for _, tt := range cases {
+		t.Run(tt.name, func(t *testing.T) {
+			stu := NewCheckerFromArray([9][9]uint8{
+				{},
+				tt.boardRow,
+			})
+
+			result := stu.OkHorizontalSpecifiedPosition([2]uint8{1, 0})
+
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
