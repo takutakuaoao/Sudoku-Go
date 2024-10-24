@@ -74,39 +74,42 @@ func (c *Checker) IsValidNumberBlock(position uint8) (bool, error) {
 }
 
 func (c *Checker) OkHorizontalSpecifiedPosition(position [2]uint8) bool {
-	if c.board.IsUnEntered(position) {
-		return true
-	}
-
-	return !c.board.DuplicateNumberInRow(position[0], c.board.GetPositionNumber(position))
+	return c.tryIfNotEmptyPosition(position, func(position [2]uint8) bool {
+		return !c.board.DuplicateNumberInRow(position[0], c.board.GetPositionNumber(position))
+	})
 }
 
 func (c *Checker) OkVerticalSpecifiedPosition(position [2]uint8) bool {
+	return c.tryIfNotEmptyPosition(position, func(position [2]uint8) bool {
+		return !c.board.DuplicateNumberInColumn(
+			position[1],
+			c.board.GetPositionNumber(position),
+		)
+	})
+}
+
+func (c *Checker) OkBlockSpecifiedSquare(position [2]uint8) bool {
+	return c.tryIfNotEmptyPosition(position, func(position [2]uint8) bool {
+		targetNumber := c.board.GetPositionNumber(position)
+
+		count := 0
+
+		for _, number := range c.board.GetNumbersInBlock(position) {
+			if targetNumber == number {
+				count++
+			}
+		}
+
+		return count == 1
+	})
+}
+
+func (c *Checker) tryIfNotEmptyPosition(position [2]uint8, callBack func(position [2]uint8) bool) bool {
 	if c.board.IsUnEntered(position) {
 		return true
 	}
 
-	return !c.board.DuplicateNumberInColumn(
-		position[1],
-		c.board.GetPositionNumber(position),
-	)
-}
-
-func getNumberBlockPositions(target uint8) [9][2]uint8 {
-	firstPositions := [9][2]uint8{
-		{0, 0}, {0, 3}, {0, 6},
-		{3, 0}, {3, 3}, {3, 6},
-		{6, 0}, {6, 3}, {6, 6},
-	}
-
-	top := firstPositions[target][0]
-	left := firstPositions[target][1]
-
-	return [9][2]uint8{
-		{top, left}, {top, left + 1}, {top, left + 2},
-		{top + 1, left}, {top + 1, left + 1}, {top + 1, left + 2},
-		{top + 2, left}, {top + 2, left + 1}, {top + 2, left + 2},
-	}
+	return callBack(position)
 }
 
 func hasOneToNine(has func(uint8) bool) bool {

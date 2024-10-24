@@ -317,3 +317,49 @@ func Test_to_check_for_rule_violations_on_the_vertical_line_of_given_square(t *t
 	}
 
 }
+
+func Test_to_check_for_rule_violations_on_the_block_to_which_the_specified_square_belongs(t *testing.T) {
+	cases := []struct {
+		name   string
+		board  [9][9]uint8
+		expect bool
+	}{
+		{
+			name: "Duplicate numbers on a block are not acceptable.",
+			board: [9][9]uint8{
+				{1, 2, 3},
+				{4, 1, 5},
+				{6, 7, 8},
+			},
+			expect: false,
+		},
+		{
+			name: "OK if there are no duplicate numbers on a block.",
+			board: [9][9]uint8{
+				{1, 2, NOT_YET_INPUT},
+				{4, 5, NOT_YET_INPUT},
+				{7, 8, 9},
+			},
+			expect: true,
+		},
+		{
+			name: "OK if the specified square is not filled in.",
+			board: [9][9]uint8{
+				{0, 0, 0},
+				{0, 0, 0},
+				{0, 0, 0},
+			},
+			expect: true,
+		},
+	}
+
+	for _, tt := range cases {
+		t.Run(tt.name, func(t *testing.T) {
+			sut := NewCheckerFromArray(tt.board)
+
+			result := sut.OkBlockSpecifiedSquare([2]uint8{0, 0})
+
+			assert.Equal(t, tt.expect, result)
+		})
+	}
+}
