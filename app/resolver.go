@@ -14,21 +14,25 @@ func NewResolver(board Board) *Resolver {
 
 func (r *Resolver) Resolve() Resolver {
 	emptySpaces := r.board.SearchNotYetEntered()
+	history := *NewHistory(emptySpaces)
+	checker := NewChecker(&r.board)
 
-	for _, input := range []uint8{1, 2, 3, 4, 5, 6, 7, 8, 9} {
-		filled := r.board.FillIn(emptySpaces[0][0], emptySpaces[0][1], input)
+	for !checker.IsComplete() {
+		position, number, _ := history.GetInput()
 
-		if NewChecker(filled).IsComplete() {
-			return Resolver{
-				board:      r.board,
-				isComplete: true,
-			}
+		r.board = r.board.FillIn(position[0], position[1], number)
+
+		if checker.OkAllRulesSpecifiedSquare(position) {
+			history = history.OK()
+		} else {
+			history = history.NG()
+			r.board = r.board.FillIn(position[0], position[1], 0)
 		}
 	}
 
 	return Resolver{
 		board:      r.board,
-		isComplete: false,
+		isComplete: true,
 	}
 }
 

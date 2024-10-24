@@ -7,14 +7,14 @@ import (
 const MAX_NUMBER_BLOCK_TARGET = 8
 
 type Checker struct {
-	board Board
+	board *Board
 }
 
 func NewCheckerFromArray(board [9][9]uint8) *Checker {
-	return NewChecker(*NewBoard(board))
+	return NewChecker(NewBoard(board))
 }
 
-func NewChecker(board Board) *Checker {
+func NewChecker(board *Board) *Checker {
 	return &Checker{
 		board: board,
 	}

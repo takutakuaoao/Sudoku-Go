@@ -49,27 +49,15 @@ func (h History) nextPosition() History {
 }
 
 func (h History) backPosition() History {
-	targetIndex := h.searchAlivePositionIndex()
+	tmp := h.updatePosition(h.currentIndex, h.getCurrent().resetNumber())
 
-	return h.
-		updatePosition(targetIndex, h.positions[targetIndex].nextNumber()).
-		updateIndex(targetIndex)
-}
-
-func (h History) searchAlivePositionIndex() uint8 {
-	targetIndex := uint8(0)
-
-	for i := h.currentIndex - 1; i > 0; i-- {
-		position := h.positions[i]
-
-		if !position.hasLast() {
-			targetIndex = i
-
-			break
-		}
+	if tmp.positions[h.currentIndex-1].hasLast() {
+		tmp = tmp.updatePosition(h.currentIndex-1, h.positions[h.currentIndex-1].resetNumber())
+	} else {
+		tmp = tmp.updatePosition(h.currentIndex-1, h.positions[h.currentIndex-1].nextNumber())
 	}
 
-	return targetIndex
+	return tmp.updateIndex(h.currentIndex - 1)
 }
 
 func (h History) getCurrent() position {
@@ -121,4 +109,12 @@ func (p position) hasLast() bool {
 
 func (p position) toPrimitive() ([2]uint8, uint8) {
 	return [2]uint8{p.y, p.x}, p.lastNumber
+}
+
+func (p position) resetNumber() position {
+	return position{
+		y:          p.y,
+		x:          p.x,
+		lastNumber: 1,
+	}
 }
