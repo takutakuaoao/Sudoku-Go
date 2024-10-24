@@ -363,3 +363,72 @@ func Test_to_check_for_rule_violations_on_the_block_to_which_the_specified_squar
 		})
 	}
 }
+
+func Test_to_check_for_all_rules_not_violations(t *testing.T) {
+	cases := []struct {
+		name   string
+		board  [9][9]uint8
+		expect bool
+	}{
+		{
+			name: "all OK",
+			board: [9][9]uint8{
+				{NOT_YET_INPUT, 1, 3},
+				{4, 2, NOT_YET_INPUT},
+				{5, 6, NOT_YET_INPUT},
+				{5, 4, 3},
+			},
+			expect: true,
+		},
+		{
+			name: "NG by violating the vertical rule",
+			board: [9][9]uint8{
+				{NOT_YET_INPUT, 1, 3},
+				{4, 2, NOT_YET_INPUT},
+				{5, 6, NOT_YET_INPUT},
+				{5, 2, 3},
+			},
+			expect: false,
+		},
+		{
+			name: "NG by violating the horizontal rule",
+			board: [9][9]uint8{
+				{NOT_YET_INPUT, 1, 3},
+				{4, 2, NOT_YET_INPUT, 2},
+				{5, 6, NOT_YET_INPUT},
+				{5, 4, 3},
+			},
+			expect: false,
+		},
+		{
+			name: "NG by violating the block rule",
+			board: [9][9]uint8{
+				{NOT_YET_INPUT, 1, 3},
+				{4, 2, NOT_YET_INPUT},
+				{5, 6, 2},
+				{5, 4, 3},
+			},
+			expect: false,
+		},
+		{
+			name: "OK with unentered square",
+			board: [9][9]uint8{
+				{NOT_YET_INPUT, 1, 3},
+				{4, NOT_YET_INPUT, NOT_YET_INPUT},
+				{5, 6, 2},
+				{5, 4, 3},
+			},
+			expect: true,
+		},
+	}
+
+	for _, tt := range cases {
+		t.Run(tt.name, func(t *testing.T) {
+			sut := NewCheckerFromArray(tt.board)
+
+			result := sut.OkAllRulesSpecifiedSquare([2]uint8{1, 1})
+
+			assert.Equal(t, tt.expect, result)
+		})
+	}
+}

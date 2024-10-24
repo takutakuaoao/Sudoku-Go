@@ -73,6 +73,12 @@ func (c *Checker) IsValidNumberBlock(position uint8) (bool, error) {
 	}), nil
 }
 
+func (c *Checker) OkAllRulesSpecifiedSquare(position [2]uint8) bool {
+	return c.OkVerticalSpecifiedPosition(position) &&
+		c.OkHorizontalSpecifiedPosition(position) &&
+		c.OkBlockSpecifiedSquare(position)
+}
+
 func (c *Checker) OkHorizontalSpecifiedPosition(position [2]uint8) bool {
 	return c.tryIfNotEmptyPosition(position, func(position [2]uint8) bool {
 		return !c.board.DuplicateNumberInRow(position[0], c.board.GetPositionNumber(position))
