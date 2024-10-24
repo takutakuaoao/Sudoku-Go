@@ -40,3 +40,31 @@ func Test_if_all_squares_are_OK(t *testing.T) {
 
 	assert.True(t, isAllOK)
 }
+
+func Test_to_resume_from_a_successful_square_if_the_squares_are_not_filled_consecutively(t *testing.T) {
+	sut := History{
+		currentIndex: 2,
+		positions: []position{
+			{
+				y:          0,
+				x:          1,
+				lastNumber: 1,
+			},
+			{
+				y:          0,
+				x:          2,
+				lastNumber: 9,
+			},
+			{
+				y:          0,
+				x:          3,
+				lastNumber: 9,
+			},
+		},
+	}
+
+	position, number, _ := sut.NG().GetInput()
+
+	assert.Equal(t, [2]uint8{0, 1}, position)
+	assert.Equal(t, uint8(2), number)
+}
