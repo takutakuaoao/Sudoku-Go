@@ -271,3 +271,49 @@ func Test_to_check_for_rule_violations_on_the_horizontal_line_of_given_square(t 
 		})
 	}
 }
+
+func Test_to_check_for_rule_violations_on_the_vertical_line_of_given_square(t *testing.T) {
+	cases := []struct {
+		name         string
+		verticalLine [9][9]uint8
+		expected     bool
+	}{
+		{
+			name: "Duplicate numbers on a vertical line are not acceptable.",
+			verticalLine: [9][9]uint8{
+				{1},
+				{1},
+				{2},
+			},
+			expected: false,
+		},
+		{
+			name: "OK if there are no duplicate numbers on a vertical line.",
+			verticalLine: [9][9]uint8{
+				{1},
+				{2},
+			},
+			expected: true,
+		},
+		{
+			name: "OK if the specified square is not filled in.",
+			verticalLine: [9][9]uint8{
+				{0},
+				{0},
+				{0},
+			},
+			expected: true,
+		},
+	}
+
+	for _, tt := range cases {
+		t.Run(tt.name, func(t *testing.T) {
+			stu := NewCheckerFromArray(tt.verticalLine)
+
+			result := stu.OkVerticalSpecifiedPosition([2]uint8{0, 0})
+
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+
+}

@@ -81,6 +81,17 @@ func (c *Checker) OkHorizontalSpecifiedPosition(position [2]uint8) bool {
 	return !c.board.DuplicateNumberInRow(position[0], c.board.GetPositionNumber(position))
 }
 
+func (c *Checker) OkVerticalSpecifiedPosition(position [2]uint8) bool {
+	if c.board.IsUnEntered(position) {
+		return true
+	}
+
+	return !c.board.DuplicateNumberInColumn(
+		position[1],
+		c.board.GetPositionNumber(position),
+	)
+}
+
 func getNumberBlockPositions(target uint8) [9][2]uint8 {
 	firstPositions := [9][2]uint8{
 		{0, 0}, {0, 3}, {0, 6},

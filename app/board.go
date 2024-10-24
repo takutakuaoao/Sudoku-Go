@@ -68,6 +68,18 @@ func (b *Board) DuplicateNumberInRow(rowNumber uint8, number uint8) bool {
 	return count >= 2
 }
 
+func (b *Board) DuplicateNumberInColumn(columnNumber uint8, number uint8) bool {
+	count := 0
+
+	for _, row := range b.rows {
+		if row[columnNumber] == number {
+			count++
+		}
+	}
+
+	return count >= 2
+}
+
 func (b *Board) GetPositionNumber(position [2]uint8) uint8 {
 	return b.rows[position[0]][position[1]]
 }
