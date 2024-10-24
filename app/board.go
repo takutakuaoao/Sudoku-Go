@@ -87,3 +87,13 @@ func (b *Board) GetPositionNumber(position [2]uint8) uint8 {
 func (b *Board) IsUnEntered(position [2]uint8) bool {
 	return b.GetPositionNumber(position) == NOT_YET_INPUT
 }
+
+func (b *Board) GetNumbersInBlock(position [2]uint8) [9]uint8 {
+	result := []uint8{}
+
+	for _, pos := range NewBlock().GetAllPositionInBlock(position) {
+		result = append(result, b.GetPositionNumber(pos))
+	}
+
+	return [9]uint8(result)
+}

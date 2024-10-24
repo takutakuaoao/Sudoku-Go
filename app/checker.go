@@ -57,7 +57,7 @@ func (c *Checker) IsValidNumberBlock(position uint8) (bool, error) {
 		return false, errors.New(ERROR_OUT_BLOCK_NUMBER_RANGE)
 	}
 
-	targetPositions := getNumberBlockPositions(position)
+	targetPositions := NewBlock().GetAllPositionFromBlockNumber(position)
 
 	const ROW_INDEX = 0
 	const COLUMN_INDEX = 1
