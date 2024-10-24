@@ -52,6 +52,18 @@ func (b *Board) HasInColumn(column uint8, value uint8) bool {
 	return false
 }
 
+func (b *Board) HasInBlock(position [2]uint8, value uint8) bool {
+	blockPositions := NewBlock().GetAllPositionInBlock(position)
+
+	for _, blockPos := range blockPositions {
+		if b.Has(blockPos[0], blockPos[1], value) {
+			return true
+		}
+	}
+
+	return false
+}
+
 func (b *Board) Has(row uint8, column uint8, value uint8) bool {
 	return b.rows[row][column] == value
 }
@@ -96,4 +108,20 @@ func (b *Board) GetNumbersInBlock(position [2]uint8) [9]uint8 {
 	}
 
 	return [9]uint8(result)
+}
+
+func (b *Board) NarrowDownEnterableNumbers(position [2]uint8) []uint8 {
+	numbers := []uint8{1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+	result := []uint8{}
+
+	for _, number := range numbers {
+		if b.HasInRow(position[0], number) || b.HasInColumn(position[1], number) || b.HasInBlock(position, number) {
+			continue
+		}
+
+		result = append(result, number)
+	}
+
+	return result
 }

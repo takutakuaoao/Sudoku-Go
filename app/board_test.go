@@ -150,3 +150,20 @@ func Test_to_return_the_positions_of_the_block_to_which_the_specified_square_bel
 		})
 	}
 }
+
+func Test_to_narrow_down_the_numbers_that_can_be_entered(t *testing.T) {
+	sut := NewBoard([9][9]uint8{
+		{0, 0, 1, 0, 5, 0, 0, 9, 2},
+		{3, 9, 7, 2, 4, 1, 0, 6, 0},
+		{0, 0, 0, 0, 3, 0, 0, 4, 0},
+		{0, 0, 0, 3, 7, 2, 4, 0, 6},
+		{7, 3, 0, 4, 0, 6, 2, 0, 0},
+		{6, 4, 0, 0, 8, 0, 0, 0, 3},
+		{0, 6, 4, 5, 0, 0, 7, 0, 9},
+		{5, 0, 0, 9, 6, 4, 8, 0, 1},
+		{8, 0, 9, 0, 0, 3, 0, 5, 0},
+	})
+
+	result := sut.NarrowDownEnterableNumbers([2]uint8{0, 3})
+	assert.Equal(t, []uint8{6, 7, 8}, result)
+}
