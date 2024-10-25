@@ -13,8 +13,7 @@ func NewResolver(board Board) *Resolver {
 }
 
 func (r *Resolver) Resolve() Resolver {
-	emptySpaces := r.board.SearchNotYetEntered()
-	history := *NewHistory(emptySpaces)
+	history := *NewHistoryFromBoard(r.board)
 	checker := NewChecker(&r.board)
 
 	for !checker.IsComplete() {
