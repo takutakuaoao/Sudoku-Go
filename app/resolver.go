@@ -17,7 +17,7 @@ func (r *Resolver) Resolve() Resolver {
 	checker := NewChecker(&r.board)
 
 	for !checker.IsComplete() {
-		position, number, _ := history.GetInput()
+		position, number, _ := history.GetNextInput()
 
 		r.board = r.board.FillIn(position[0], position[1], number)
 
