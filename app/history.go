@@ -1,4 +1,4 @@
-package app
+package main
 
 func NewHistoryFromBoard(board Board) *History {
 	noEnteredSquares := board.SearchNotYetEntered()

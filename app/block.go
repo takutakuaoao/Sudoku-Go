@@ -1,4 +1,4 @@
-package app
+package main
 
 type Block struct {
 	eachBlockStartPositions [9][2]uint8

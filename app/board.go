@@ -1,4 +1,4 @@
-package app
+package main
 
 const NOT_YET_INPUT = 0
 
