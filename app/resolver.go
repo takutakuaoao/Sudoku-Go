@@ -25,7 +25,7 @@ func (r *Resolver) Resolve() Resolver {
 			history = history.OK()
 		} else {
 			history = history.NG()
-			r.board = r.board.FillIn(position[0], position[1], 0)
+			r.board = history.FillInAsUnentered(r.board)
 		}
 	}
 

@@ -39,14 +39,17 @@ func (h History) OK() History {
 }
 
 func (h History) NG() History {
-	if h.getCurrent().hasLast() {
-		return h.backPosition()
+	tmp := h.cleanResetPositions().
+		addResetPosition(h.getCurrent())
+
+	if tmp.getCurrent().hasLast() {
+		return tmp.backPosition()
 	}
 
-	return h.nextNumber()
+	return tmp.nextNumber()
 }
 
-func (h History) GetInput() ([2]uint8, uint8, bool) {
+func (h History) GetNextInput() ([2]uint8, uint8, bool) {
 	if h.currentIndex+1 > uint8(len(h.positions)) {
 		return [2]uint8{}, 0, true
 	}
@@ -56,24 +59,30 @@ func (h History) GetInput() ([2]uint8, uint8, bool) {
 	return position, lastNumber, false
 }
 
+func (h History) FillInAsUnentered(board Board) Board {
+	tmp := board
+
+	for _, resetPosition := range h.resetPositions {
+		tmp = tmp.FillIn(resetPosition[0], resetPosition[1], 0)
+	}
+
+	return tmp
+}
+
+func (h History) cleanResetPositions() History {
+	return History{
+		currentIndex:   h.currentIndex,
+		positions:      h.positions,
+		resetPositions: [][2]uint8{},
+	}
+}
+
 func (h History) nextNumber() History {
 	return h.updatePosition(h.currentIndex, h.getCurrent().nextNumber())
 }
 
 func (h History) nextPosition() History {
 	return h.updateIndex(h.currentIndex + 1)
-}
-
-func (h History) backPosition() History {
-	tmp := h.updatePosition(h.currentIndex, h.getCurrent().resetNumber())
-
-	if tmp.positions[h.currentIndex-1].hasLast() {
-		tmp = tmp.updatePosition(h.currentIndex-1, h.positions[h.currentIndex-1].resetNumber())
-	} else {
-		tmp = tmp.updatePosition(h.currentIndex-1, h.positions[h.currentIndex-1].nextNumber())
-	}
-
-	return tmp.updateIndex(h.currentIndex - 1)
 }
 
 func (h History) getCurrent() position {
@@ -85,16 +94,62 @@ func (h History) updatePosition(index uint8, newPos position) History {
 	tmpPositions[index] = newPos
 
 	return History{
-		currentIndex: h.currentIndex,
-		positions:    tmpPositions,
+		currentIndex:   h.currentIndex,
+		positions:      tmpPositions,
+		resetPositions: h.resetPositions,
 	}
 }
 
 func (h History) updateIndex(index uint8) History {
 	return History{
-		positions:    h.positions,
-		currentIndex: index,
+		positions:      h.positions,
+		currentIndex:   index,
+		resetPositions: h.resetPositions,
 	}
+}
+
+func (h History) addResetPosition(position position) History {
+	pos, _ := position.toPrimitive()
+
+	tmp := h.resetPositions
+	tmp = append(tmp, pos)
+
+	return History{
+		currentIndex:   h.currentIndex,
+		positions:      h.positions,
+		resetPositions: tmp,
+	}
+}
+
+func (h History) backPosition() History {
+	tmp := h.updatePosition(h.currentIndex, h.getCurrent().resetNumber())
+
+	if tmp.getPrevPosition().hasLast() {
+		return tmp.
+			backPrevFirstNumber().
+			backPosition()
+	}
+
+	return tmp.nextPrevPositionNumber()
+}
+
+func (h History) backPrevFirstNumber() History {
+	return h.
+		updatePrevPosition(h.getPrevPosition().resetNumber()).
+		addResetPosition(h.getPrevPosition())
+}
+
+func (h History) nextPrevPositionNumber() History {
+	return h.updatePrevPosition(h.getPrevPosition().nextNumber())
+}
+
+func (h History) updatePrevPosition(prevPosition position) History {
+	return h.updatePosition(h.currentIndex-1, prevPosition).
+		updateIndex(h.currentIndex - 1)
+}
+
+func (h History) getPrevPosition() position {
+	return h.positions[h.currentIndex-1]
 }
 
 type position struct {
